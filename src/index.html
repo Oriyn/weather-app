@@ -5,13 +5,14 @@
     <div class="main" id="app">
         <h1>Check the weather!</h1>
 
-        <div>Select a search typr
-            <label for="zipCode">Zip code</label>
-            <input type="radio" id="zipCode" name="searchType">
-            <label for="zipCode"></label>
-            <input type="radio" id="zipCode" name="searchType">
-            <label for="zipCode">Zip code</label>
-            <input type="radio" id="zipCode" name="searchType">
+        <div>
+          <h2>Select a search type</h2>
+            <label for="zipCode">Zip Code:</label>
+            <input v-model="searchType" type="radio" value="zipCode" id="zipCode" name="searchType">
+            <label for="cityName">City Name:</label>
+            <input v-model="searchType" type="radio" value="cityName" id="cityName" name="searchType">
+            <label for="cordinates">Cordiantes:</label>
+            <input v-model="searchType" type="radio" value="cordinates" id="cordinates" name="searchType">
         </div>
         <p>Type in a location to see forcast</p>
         <input type="text" v-model="location" id="locationInput">
@@ -24,7 +25,7 @@
      el: '#app', 
      data: {
        location: '',
-       type: ''
+       searchType: []
      },
      methods: {
        getWeatherInfo: (location) => {
