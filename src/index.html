@@ -1,0 +1,52 @@
+<html>
+    <head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <div class="main" id="app">
+        <h1>Check the weather!</h1>
+
+        <div>Select a search typr
+            <label for="zipCode">Zip code</label>
+            <input type="radio" id="zipCode" name="searchType">
+            <label for="zipCode"></label>
+            <input type="radio" id="zipCode" name="searchType">
+            <label for="zipCode">Zip code</label>
+            <input type="radio" id="zipCode" name="searchType">
+        </div>
+        <p>Type in a location to see forcast</p>
+        <input type="text" v-model="location" id="locationInput">
+
+    </div>
+</html>
+
+<script>
+   const app = new Vue ({
+     el: '#app', 
+     data: {
+       location: '',
+       type: ''
+     },
+     methods: {
+       getWeatherInfo: (location) => {
+         axios.get()
+       },
+       buildApiString: () => {
+         
+       }
+     }
+    });
+</script>
+
+
+<style>
+    h1 {
+      margin-top: 3rem;
+      margin-bottom: 4rem;
+    }
+    p {
+
+    }
+    .main {
+      align-items: center;
+    }
+</style>
