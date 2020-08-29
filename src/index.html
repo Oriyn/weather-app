@@ -14,9 +14,28 @@
             <label for="cordinates">Cordiantes:</label>
             <input v-model="searchType" type="radio" value="cordinates" id="cordinates" name="searchType">
         </div>
-        <p>Type in a location to see forcast</p>
-        <input type="text" v-model="location" id="locationInput">
 
+        <div v-if="searchType === 'zipCode'">
+          <p>this is zipcode</p>
+          <label for="zipCodeInput">Zip Code:</label>
+          <input type="text" v-model="location" id="zipCodeInput">
+        </div>
+
+        <div v-if="searchType === 'cityName'">
+          <p>this is city name</p>
+          <label for="cityNameInput">City Name:</label>
+          <input type="text" v-model="location" id="cityNameInput">
+        </div>
+
+        <div v-if="searchType === 'cordinates'">
+          <p>this is cordinates</p>
+          <label for="latitude">Latitude:</label>
+          <input type="text" v-model="latitude" id="latitude">
+          <label for="longitude">Longitude:</label>
+          <input type="text" v-model="longitude" id="longitude">
+        </div>
+
+        <button @click="getWeatherInfo()">Submit</button>
     </div>
 </html>
 
@@ -24,15 +43,35 @@
    const app = new Vue ({
      el: '#app', 
      data: {
+       latitude: '',
+       longitude: '',
        location: '',
-       searchType: []
+       searchType: ''
      },
      methods: {
-       getWeatherInfo: (location) => {
-         axios.get()
-       },
-       buildApiString: () => {
+       getWeatherInfo () {
+         console.log('hit getWeatherInfo');
+         var url = this.buildApiString();
          
+         
+       },
+       buildApiString () {
+         var url,
+             apiKey = 'cf002751564a4c78f5f7ed479f1b9ba3';
+         if (this.searchType === 'zipCode') {
+          console.log('hit zipcode');
+          url = `api.openweathermap.org/data/2.5/weather?zip=${this.location}&appid=${apiKey}`;
+         } else if (this.searchType === 'cityName') {
+          console.log('hit cityName');
+          url = `api.openweathermap.org/data/2.5/weather?q=${this.location}&appid=${apiKey}`;
+         } else if (this.searchType === 'cordinates') {
+          console.log('hit cordinates');
+          url = `api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${apiKey}`;
+         } else {
+           alert('Please choose a search tyoe');
+         }
+         console.log('url', url);
+         return url;
        }
      }
     });
