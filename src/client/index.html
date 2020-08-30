@@ -56,21 +56,21 @@
          console.log('hit getWeatherInfo');
          var url = this.buildApiString();
          if (url) {
-          axios.get(url).then(response => (this.apiResponse = response.data));
+          axios.post('/api/weather', {url: url}).then(response => (this.apiResponse = response.data));
          } 
        },
        buildApiString () {
          var url,
-             apiKey = 'cf002751564a4c78f5f7ed479f1b9ba3';
+             baseWeatherApiString = 'https://api.openweathermap.org/data/2.5/weather?';
          if (this.searchType === 'zipCode') {
           console.log('hit zipcode');
-          url = `api.openweathermap.org/data/2.5/weather?zip=${this.location}&appid=${apiKey}`;
+          url = `${baseWeatherApiString}zip=${this.location}&appid=`;
          } else if (this.searchType === 'cityName') {
           console.log('hit cityName');
-          url = `api.openweathermap.org/data/2.5/weather?q=${this.location}&appid=${apiKey}`;
+          url = `${baseWeatherApiString}q=${this.location}&appid=`;
          } else if (this.searchType === 'cordinates') {
           console.log('hit cordinates');
-          url = `api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&appid=${apiKey}`;
+          url = `${baseWeatherApiString}lat=${this.latitude}&lon=${this.longitude}&appid=`;
          } else {
            alert('Please choose a search tyoe');
          }
