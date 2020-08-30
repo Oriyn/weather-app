@@ -4,9 +4,9 @@
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     </head>
     <div class="main" id="app">
-        <h1>Check the weather!</h1>
 
-        <div>
+        <div class="search-header">
+          <h1>Current Forcast</h1>
           <h2>Select a search type</h2>
             <label for="zipCode">Zip Code:</label>
             <input v-model="searchType" type="radio" value="zipCode" id="zipCode" name="searchType">
@@ -16,28 +16,31 @@
             <input v-model="searchType" type="radio" value="cordinates" id="cordinates" name="searchType">
         </div>
 
-        <div v-if="searchType === 'zipCode'">
-          <p>this is zipcode</p>
-          <label for="zipCodeInput">Zip Code:</label>
-          <input type="text" v-model="location" id="zipCodeInput">
+        <div class="search-fields">
+          <div v-if="searchType === 'zipCode'">
+            <label for="zipCodeInput">Zip Code:</label>
+            <input type="text" v-model="location" id="zipCodeInput">
+          </div>
+  
+          <div v-if="searchType === 'cityName'">
+            <label for="cityNameInput">City Name:</label>
+            <input type="text" v-model="location" id="cityNameInput">
+          </div>
+  
+          <div v-if="searchType === 'cordinates'">
+            <label for="latitude">Latitude:</label>
+            <input type="text" v-model="latitude" id="latitude">
+            <label for="longitude">Longitude:</label>
+            <input type="text" v-model="longitude" id="longitude">
+          </div>
         </div>
 
-        <div v-if="searchType === 'cityName'">
-          <p>this is city name</p>
-          <label for="cityNameInput">City Name:</label>
-          <input type="text" v-model="location" id="cityNameInput">
-        </div>
 
-        <div v-if="searchType === 'cordinates'">
-          <p>this is cordinates</p>
-          <label for="latitude">Latitude:</label>
-          <input type="text" v-model="latitude" id="latitude">
-          <label for="longitude">Longitude:</label>
-          <input type="text" v-model="longitude" id="longitude">
-        </div>
 
-        <button @click="getWeatherInfo()">Submit</button>
-        {{ apiResponse }}
+        
+        <div v-if="apiResponse !== {}">
+
+        </div>
     </div>
 </html>
 
@@ -84,13 +87,31 @@
 
 <style>
     h1 {
-      margin-top: 3rem;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-top: 1.5rem;
       margin-bottom: 4rem;
     }
-    p {
-
+    h2 {
+      text-align: center;
+    }
+    .search-fields {
+      justify-self: center;
+      grid-area: field;
+    }
+    .search-header {
+      justify-self: center;
+      grid-area: header;
+      margin-bottom: 3rem;
     }
     .main {
-      align-items: center;
+      display: grid;
+      grid-template-columns: 25% 25% 25% 25%;
+      grid-template-rows: auto;
+      grid-template-areas: 
+        ". header header ."
+        ". field field ."
+        ". main main ."
+        ". footer footer .";
     }
 </style>
