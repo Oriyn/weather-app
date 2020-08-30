@@ -1,6 +1,7 @@
 <html>
     <head>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://unpkg.com/axios@0.19.2/dist/axios.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     </head>
     <div class="main" id="app">
         <h1>Check the weather!</h1>
@@ -36,6 +37,7 @@
         </div>
 
         <button @click="getWeatherInfo()">Submit</button>
+        {{ apiResponse }}
     </div>
 </html>
 
@@ -46,14 +48,16 @@
        latitude: '',
        longitude: '',
        location: '',
-       searchType: ''
+       searchType: '',
+       apiResponse: {}
      },
      methods: {
        getWeatherInfo () {
          console.log('hit getWeatherInfo');
          var url = this.buildApiString();
-         
-         
+         if (url) {
+          axios.get(url).then(response => (this.apiResponse = response.data));
+         } 
        },
        buildApiString () {
          var url,
