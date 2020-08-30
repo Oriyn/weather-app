@@ -33,13 +33,14 @@
             <label for="longitude">Longitude:</label>
             <input type="text" v-model="longitude" id="longitude">
           </div>
+          <button @click="getWeatherInfo()">Submit</button>
         </div>
 
 
 
-        
-        <div v-if="apiResponse !== {}">
-
+        {{apiResponse}}
+        <div v-if="hasData !== false" class="weather-info">
+          <p>{{ apiResponse.main.temp }}</p>
         </div>
     </div>
 </html>
@@ -52,33 +53,44 @@
        longitude: '',
        location: '',
        searchType: '',
-       apiResponse: {}
+       apiResponse: {},
+       hasData: false
      },
      methods: {
        getWeatherInfo () {
          console.log('hit getWeatherInfo');
          var url = this.buildApiString();
          if (url) {
-          axios.post('/api/weather', {url: url}).then(response => (this.apiResponse = response.data));
+          axios.post('/api/weather', {url: url}).then((response) => {
+            this.convertTempsToF(response.data);
+            this.apiResponse = response.data;
+            this.hasData = true;
+          });
          } 
        },
        buildApiString () {
          var url,
              baseWeatherApiString = 'https://api.openweathermap.org/data/2.5/weather?';
          if (this.searchType === 'zipCode') {
-          console.log('hit zipcode');
           url = `${baseWeatherApiString}zip=${this.location}&appid=`;
          } else if (this.searchType === 'cityName') {
-          console.log('hit cityName');
           url = `${baseWeatherApiString}q=${this.location}&appid=`;
          } else if (this.searchType === 'cordinates') {
-          console.log('hit cordinates');
           url = `${baseWeatherApiString}lat=${this.latitude}&lon=${this.longitude}&appid=`;
          } else {
            alert('Please choose a search tyoe');
          }
-         console.log('url', url);
          return url;
+       },
+       convertTempsToF(apiResponse) {
+         var temps = apiResponse.main;
+         temps.temp = this.kToFConversion(temps.temp);
+         temps.feels_like = this.kToFConversion(temps.feels_like)
+         temps.temp_min = this.kToFConversion(temps.temp_min);
+         temps.temp_max = this.kToFConversion(temps.temp_max);
+       },
+       kToFConversion(kelvinTemp) {
+         return (kelvinTemp * 9/5 - 459.67).toFixed(2);
        }
      }
     });
@@ -91,6 +103,10 @@
       font-size: 1.8rem;
       margin-top: 1.5rem;
       margin-bottom: 4rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      justify-self: center;
     }
     h2 {
       text-align: center;
