@@ -2,6 +2,7 @@
     <head>
       <script src="https://unpkg.com/axios@0.19.2/dist/axios.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://kit.fontawesome.com/ec952ed1e4.js" crossorigin="anonymous"></script>
     </head>
     <div class="main" id="app">
 
@@ -33,14 +34,22 @@
             <label for="longitude">Longitude:</label>
             <input type="text" v-model="longitude" id="longitude">
           </div>
-          <button @click="getWeatherInfo()">Submit</button>
         </div>
 
+        <button @click="getWeatherInfo()">Submit</button>
 
-
-        {{apiResponse}}
         <div v-if="hasData !== false" class="weather-info">
-          <p>{{ apiResponse.main.temp }}</p>
+          <h2 class="location">{{ apiResponse.name }}</h2>
+          <p class="temperature">{{ apiResponse.main.temp }}&#8457;</p>
+          <div>
+            <p>Feels Like</p>
+            <p class="feels-like">{{ apiResponse.main.feels_like }}&#8457;</p>
+          </div>
+          <div class="weather-group">
+            <p class="weather-stats"><i v-bind:class="forcast" class="fas"></i> {{apiResponse.weather[0].description}}</p>
+            <p class="weather-stats"><i class="fas fa-wind"></i> {{apiResponse.wind.speed}}mph</p>
+            <p class="weather-stats"><i class="fas fa-tint"></i> {{apiResponse.main.humidity}}% relative humidity</p>
+          </div>
         </div>
     </div>
 </html>
@@ -51,6 +60,7 @@
      data: {
        latitude: '',
        longitude: '',
+       forcast: '',
        location: '',
        searchType: '',
        apiResponse: {},
@@ -58,12 +68,12 @@
      },
      methods: {
        getWeatherInfo () {
-         console.log('hit getWeatherInfo');
          var url = this.buildApiString();
          if (url) {
           axios.post('/api/weather', {url: url}).then((response) => {
             this.convertTempsToF(response.data);
             this.apiResponse = response.data;
+            this.setForcast(this.apiResponse.weather[0].main);
             this.hasData = true;
           });
          } 
@@ -82,6 +92,17 @@
          }
          return url;
        },
+       setForcast(forcast) {
+        forcast = forcast.toLowerCase();
+        var forcasts = {
+          'rain' :'fa-cloud-rain',
+          'clouds': 'fa-cloud',
+          'clear': 'fa-sun',
+          'snow': 'fa-snowflake',
+          'extreme': 'fa-cloud-showers-heavy'
+        }
+        this.forcast = forcasts[forcast];
+       },
        convertTempsToF(apiResponse) {
          var temps = apiResponse.main;
          temps.temp = this.kToFConversion(temps.temp);
@@ -90,7 +111,7 @@
          temps.temp_max = this.kToFConversion(temps.temp_max);
        },
        kToFConversion(kelvinTemp) {
-         return (kelvinTemp * 9/5 - 459.67).toFixed(2);
+         return Math.round(kelvinTemp * 9/5 - 459.67);
        }
      }
     });
@@ -98,6 +119,10 @@
 
 
 <style>
+    h1,h2,p,div {
+      font-family:'Copse', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      text-align: center;
+    }
     h1 {
       text-align: center;
       font-size: 1.8rem;
@@ -111,15 +136,60 @@
     h2 {
       text-align: center;
     }
+    .weather-info {
+      grid-area: main;
+      justify-self: center;
+      margin-top: 2rem;
+    }
+    .temperature {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      font-size: 6rem;
+    }
+    .weather-stats {
+      font-size: 1.2rem;
+    }
     .search-fields {
       justify-self: center;
       grid-area: field;
+      margin-bottom: 1.5rem;
+    }
+    .location {
+      margin-top: 1.5rem;
     }
     .search-header {
       justify-self: center;
       grid-area: header;
       margin-bottom: 3rem;
     }
+    .weather-group {
+      text-align: center;
+    }
+    .feels-like {
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+    button {
+      grid-area: field;
+      margin-top: 3rem;
+      justify-self: center;
+      color: #fff !important;
+      text-transform: uppercase;
+      text-decoration: none;
+      background: #ed3330;
+      padding: 20px;
+      border-radius: 5px;
+      border: none;
+      transition: all 0.4s ease 0s;
+      }
+      button:hover {
+        background: #434343;
+        letter-spacing: 1px;
+        -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+        box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+        transition: all 0.4s ease 0s;
+        }  
     .main {
       display: grid;
       grid-template-columns: 25% 25% 25% 25%;
